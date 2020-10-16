@@ -157,8 +157,29 @@ class GameState():
             if valid_move[0] == pion :
                 tile = board.tiles[valid_move[1][0]][valid_move[1][1]]
                 board.canvas.itemconfig(tile.canvas, fill = "cyan", activefill ="magenta")
+                board.canvas.tag_bind(tile.canvas, "<Button-1>", lambda event, pion=pion, position = tile.position: self.tile_on_click(pion,position))
         board.update()
     
+    def tile_on_click(self,pion,position):
+        board.reset_tiles()
+        pion.set_position(position,board)
+        self.next_turn()
+        
+
+    def next_turn(self):
+        for pion in self.listPionPlayer :
+            pion.set_hover(board,False)
+            board.canvas.tag_unbind(pion.canvas, "<1>")
+        board.update()
+        temp = self.listPionAgent
+        self.listPionAgent = self.listPionPlayer
+        self.listPionPlayer = temp
+        for pion in self.listPionPlayer :
+            pion.set_hover(board,True)
+            board.canvas.tag_bind(pion.canvas, "<1>", lambda event, pion=pion: self.pion_on_click(pion))
+        board.update()
+         
+
     def isValidMove(self, pion, x1, y1):
         x = pion.position[0] + x1
         y = pion.position[1] + y1

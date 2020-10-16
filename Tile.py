@@ -6,7 +6,8 @@ class Tile():
         self.position =  (x_position,y_position)
         self.typeTile = typeTile
     def reset(self, board):
-        board.canvas.itemconfig(self.canvas, fill=self.typeTile.get_color()[(sum(self.position))%2], activefill=None)
+        board.canvas.itemconfig(self.canvas, fill=self.typeTile.get_color()[(sum(self.position))%2], activefill=self.typeTile.get_color()[(sum(self.position))%2])
+        board.canvas.tag_unbind(self.canvas,"<Button-1>")
     def draw(self, board):
         cell_width = int(board.canvas.winfo_width() / board.size)
         cell_height = int(board.canvas.winfo_height() / board.size)

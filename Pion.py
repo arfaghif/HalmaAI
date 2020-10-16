@@ -6,8 +6,25 @@ class Pion():
         self.playerType = playerType
         self.finish = finish
 
-    def getPosition(self):
-        return self.position
+    def set_position(self, position,board):
+        self.position = position
+        cell_width = int(board.canvas.winfo_width() / board.size)
+        cell_height = int(board.canvas.winfo_height() / board.size)
+        border_size = 9
+        
+        x1 = self.position[0] * cell_width + border_size / 2
+        y1 = self.position[1] * cell_height + border_size / 2
+        x2 = (self.position[0] + 1) * cell_width - border_size / 2
+        y2 = (self.position[1] + 1) * cell_height - border_size / 2
+
+        board.canvas.coords(self.canvas,x1,y1,x2,y2)
+        board.update()
+
+    def set_hover(self, board, hover):
+        if hover :
+            board.canvas.itemconfig(self.canvas, activefill="cyan")
+        else: 
+            board.canvas.itemconfig(self.canvas, activefill=self.playerType.get_color())
 
     def isFinish(self):
         return self.finish
