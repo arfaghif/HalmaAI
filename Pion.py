@@ -29,4 +29,4 @@ class Pion():
         else:
             active_color = None
         self.canvas = board.canvas.create_oval(x1, y1, x2, y2,tags="pion",  fill=self.playerType.get_color(), activefill=active_color,  outline=None)
-        
+        """ """
