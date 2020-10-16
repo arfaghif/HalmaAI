@@ -46,7 +46,7 @@ class Board(tk.Tk):
         self.tiles = [[None]*size for i in range(size)]
         self.agentTiles = []
         self.playerTiles =[]
-        pions = []
+        self.pions = []
         id = 0
         for row in range(size):
             for col in range(size):
@@ -54,18 +54,18 @@ class Board(tk.Tk):
                     tile = Tile(row,col, TypeTile(1))
                     self.agentTiles.append(tile)
                     pion = Pion(id,PlayerType.Agent,row,col)
-                    pions.append(pion)
+                    self.pions.append(pion)
                 elif row + col > 2 * (size - 3):
                     tile = Tile(row,col, TypeTile(2))
                     self.playerTiles.append(tile)
                     pion = Pion(id,PlayerType.Player,row,col)
-                    pions.append(pion)
+                    self.pions.append(pion)
                 else:
                     tile = Tile(row,col, TypeTile(0))
                 self.tiles[row] [col] = tile
                 tile.draw(self)
                 # print(tile.position,tile.typeTile)
-        for pion in pions:
+        for pion in self.pions:
             pion.draw(self)
         self.update()
 
@@ -75,6 +75,9 @@ class Board(tk.Tk):
     def getplayerTiles(self):
         return self.playerTiles
 
-board = Board(10)
+    def reset_tiles(self):
+        for i in range (self.size) :
+            for j in range (self.size) :
+                self.tiles[i][j].reset(self)
 
-board.mainloop()
+

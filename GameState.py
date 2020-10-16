@@ -3,14 +3,28 @@ from Board import *
 import math
 
 class GameState():
-    def __init__(self,listPionAgent, listPionPlayer, board, depth):
-        self.listPionAgent = listPionAgent
-        self.listPionPlayer = listPionPlayer
+    def __init__(self,board, listPionAgent=None, listPionPlayer=None, depth= 0):
         self.board = board
+        if listPionAgent != None:
+            self.listPionAgent = listPionAgent
+        else:
+            self.listPionAgent = []
+            for pion in board.pions :
+                if(pion.playerType == PlayerType.Agent):
+                    self.listPionAgent.append(pion)
+        if listPionPlayer != None:
+            self.listPionPlayer = listPionPlayer 
+        else:
+            self.listPionPlayer = []
+            for pion in board.pions :
+                if(pion.playerType == PlayerType.Player):
+                    self.listPionPlayer.append(pion)
         self.depth = depth
+        for pion in self.listPionPlayer :
+            board.canvas.tag_bind(pion.canvas, "<1>", lambda event, pion=pion: self.pion_on_click(pion))
+        board.update()
 
-    def newGame(self):
-        pass
+
 
 
     def isTerminalState(self):
@@ -62,16 +76,43 @@ class GameState():
         pass
 
     def validMovesAgent(self,listOfPion):
-        # validMoves = []
-        # for pion in listOfPion:
+        validMoves = []
+        for pion in listOfPion:
         #     if pion.isFinsih() : break
-        #     x = pion.getPosition().getX()
-        #     y = pion.getPosition().getY()
-        #     #upright
-        #     if (self.board.ValidPositon(x+1, y+1)):
-        #         if not isThereAPion(self.position):
-        #             if isValidMove(pion,1,1):
-        #                 validMoves.append([pion, Position(x+1,y+1)])
+            x = pion.position[0]
+            y = pion.position[1]
+            # print(x,y)
+            #up
+            #   up
+            if self.isValidMove(pion,0,1):
+                validMoves.append([pion, (x,y+1)])
+            #bottom
+            if self.isValidMove(pion,0,-1):
+                validMoves.append([pion, (x,y-1)])
+            #   right
+            if self.isValidMove(pion,1,0):
+                validMoves.append([pion, (x+1,y)])
+            #   left
+            if self.isValidMove(pion,-1,0):
+                validMoves.append([pion, (x-1,y)])
+            #   upright
+            if self.isValidMove(pion,1,1):
+                validMoves.append([pion, (x+1,y+1)])
+            #   bottomright
+            if self.isValidMove(pion,1,-1):
+                validMoves.append([pion, (x+1,y-1)])
+            #   upleft
+            if self.isValidMove(pion,-1,1):
+                validMoves.append([pion, (x-1,y+1)])
+            #   bottomleft
+            if self.isValidMove(pion,-1,-1):
+                validMoves.append([pion, (x-1,y-1)])
+
+            
+        
+
+                    # if isValidMove(pion,1,1):
+                    #     validMoves.append([pion, Position(x+1,y+1)])
         #         else:
         #             validMoves += self.Rekursive([pion, 1, 1])
 
@@ -98,16 +139,39 @@ class GameState():
             #     else:
             #         validMoves += self.Rekursive(pion,1, -1)
 
-            # return validMoves
-            pass
-
-    def isValidMove(self, pion, x, y):
-        # xPion = pion.getPosition().getX()
-        # yPion = pion.getPosition().getY()
-        # isOuterNest = pion.isOterNest()
-        # isFinish = pion.isFinish()
-        # return not (isFinish and self.board.tiles[xPion + x][yPion + y].getType() != pion.getType()*-1) and not (isOuterNest and self.board.tiles[xPion + x][yPion + y].getType() == TypeTile.Agent)
-        pass
+        return validMoves
+            
+    def pion_on_click(self, pion):
+        # print("x")
+        board.reset_tiles()
+        valid_moves = self.validMovesAgent(self.listPionPlayer)
+        # print(valid_moves)
+        for valid_move in valid_moves:
+            cell_width = int(board.canvas.winfo_width() / board.size)
+            cell_height = int(board.canvas.winfo_height() / board.size)
+            border_size = 5
+            x1 = valid_move[1][0] * cell_width + border_size / 2
+            y1 = valid_move[1][1] * cell_height + border_size / 2
+            x2 = (valid_move[1][0] + 1) * cell_width - border_size / 2
+            y2 = (valid_move[1][1] + 1) * cell_height - border_size / 2
+            if valid_move[0] == pion :
+                tile = board.tiles[valid_move[1][0]][valid_move[1][1]]
+                board.canvas.itemconfig(tile.canvas, fill = "cyan", activefill ="magenta")
+        board.update()
+    
+    def isValidMove(self, pion, x1, y1):
+        x = pion.position[0] + x1
+        y = pion.position[1] + y1
+        #out of range
+        if x<0 or x >= self.board.size or y <0 or y>= self.board.size :
+            return False
+        #there is another pion
+        for pion in (self.listPionAgent + self.listPionPlayer):
+            if pion.position == (x,y):
+                return False
+        
+        return True
+        
 
     def Rekursive(self, pion, x, y):
         # isOuterNest = pion.isOterNest()
@@ -161,3 +225,8 @@ class GameState():
         #         alpha = min(beta,v)
         #     return v
         pass
+
+
+board = Board(10)
+newGame = GameState(board)
+board.mainloop()
