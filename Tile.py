@@ -1,7 +1,7 @@
-from position import Position
+
 from TypeTile import TypeTile
 
 class Tile():
-    def __init__(self, position, typeTile):
-        self.position =   position
+    def __init__(self, x_position, y_position, typeTile):
+        self.position =  (x_position,y_position)
         self.typeTile = typeTile
