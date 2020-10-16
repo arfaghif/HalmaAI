@@ -3,18 +3,18 @@ from Tile import *
 from Pion import *
 
 class Board(tk.Tk):
+    # Merepresentasikan board sebagai papan permainan. Papan permainan berupa GUI TkInter (inherrit)
+    
     def __init__(self, size):
         tk.Tk.__init__(self)
         self.size = size
-
-        self.canvas = tk.Canvas(self, width=550, height=550, bg="#fff",
-            highlightthickness=0)
+        self.canvas = tk.Canvas(self, width=550, height=550, bg="#fff",highlightthickness=0)
         self.canvas.grid(row=1, column=1, columnspan=self.size, rowspan=self.size)
         self.update()
         
 
         """
-        literaly ngopas
+        Bagian ini literally copas 
         """
         label_font = "Helvetica 16"
         label_bg = "#fff"
@@ -39,10 +39,10 @@ class Board(tk.Tk):
             col_label2.grid(row=self.size + 2, column=i + 1)
 
         """
-        literaly ngopas
+        Akhir bagian yang copas
         """
 
-
+        # Representasikan papan yang terdiri dari kumpulan tile
         self.tiles = [[None]*size for i in range(size)]
         self.agentTiles = []
         self.playerTiles =[]
@@ -63,8 +63,10 @@ class Board(tk.Tk):
                 else:
                     tile = Tile(row,col, TypeTile(0))
                 self.tiles[row] [col] = tile
+                #gambarkan tile
                 tile.draw(self)
-                # print(tile.position,tile.typeTile)
+               
+        # gambarkan pion
         for pion in self.pions:
             pion.draw(self)
         self.update()
@@ -76,6 +78,7 @@ class Board(tk.Tk):
         return self.playerTiles
 
     def reset_tiles(self):
+        # button pada semua tile dinonaktifkan termasuk hover buttonnya
         for i in range (self.size) :
             for j in range (self.size) :
                 self.tiles[i][j].reset(self)
