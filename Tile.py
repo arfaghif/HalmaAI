@@ -19,4 +19,4 @@ class Tile():
 
         
         self.canvas = board.canvas.create_rectangle(x1, y1, x2, y2,tags="tile",  fill=self.typeTile.get_color()[(sum(self.position))%2], outline=None)
-        board.update()
+        

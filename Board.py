@@ -12,6 +12,10 @@ class Board(tk.Tk):
         self.canvas.grid(row=1, column=1, columnspan=self.size, rowspan=self.size)
         self.update()
         
+        
+        """
+        Literaly ngopas contoh
+        """
         label_font = "Helvetica 16"
         label_bg = "#fff"
         label_fg = "#333"
@@ -33,6 +37,10 @@ class Board(tk.Tk):
             col_label2 = tk.Label(self, text=chr(i + 97), font=label_font,
                 bg=label_bg, fg=label_fg)
             col_label2.grid(row=self.size + 2, column=i + 1)
+
+        """
+        Literaly ngopas contoh
+        """
 
 
         self.tiles = [[None]*size for i in range(size)]
@@ -56,9 +64,10 @@ class Board(tk.Tk):
                     tile = Tile(row,col, TypeTile(0))
                 self.tiles[row] [col] = tile
                 tile.draw(self)
-                print(tile.position,tile.typeTile)
+                # print(tile.position,tile.typeTile)
         for pion in pions:
             pion.draw(self)
+        self.update()
 
 
     def getAgentTiles(self):

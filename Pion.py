@@ -24,5 +24,9 @@ class Pion():
         # if(self.position==(0,0) or self.position==(0,1)):
         #     return
         # print("do")
-        self.canvas = board.canvas.create_oval(x1, y1, x2, y2,tags="pion",  fill=self.playerType.get_color(), activefill='cyan',  outline=None)
-        board.update()
+        if(self.playerType == PlayerType.Player):
+            active_color = 'cyan'
+        else:
+            active_color = None
+        self.canvas = board.canvas.create_oval(x1, y1, x2, y2,tags="pion",  fill=self.playerType.get_color(), activefill=active_color,  outline=None)
+        
