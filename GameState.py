@@ -9,7 +9,7 @@ class GameState():
         self.board = board
         self.depth = depth
 
-    def newGame():
+    def newGame(self):
         pass
 
 
