@@ -22,6 +22,16 @@ class Pion():
 
         board.canvas.coords(self.canvas,x1,y1,x2,y2)
         board.update()
+    
+    def set_area(self, tile):
+        if(tile.typeTile.value==0):
+            self.area = 1
+        elif(self.playerType.value == tile.typeTile.value):
+            self.area = 0
+        else:
+            self.area = 2
+        
+
 
     def set_hover(self, board, hover):
         # set hover (feedback cursor pada button) pada pion 

@@ -68,7 +68,7 @@ class GameState():
             return False
         #there is another pion
         if self.isThereAPion(x,y) : return False
-        
+
         
         return True
     
@@ -132,6 +132,7 @@ class GameState():
         # Akan juga dilanjutkan turn nya ke lawan
         self.board.reset_tiles()
         pion.set_position(position,self.board)
+        pion.set_area(self.board.tiles[position[0]][position[1]])
         self.next_turn()
         
 
