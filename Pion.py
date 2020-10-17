@@ -2,10 +2,10 @@ from PlayerType import PlayerType
 
 class Pion():
     # Representasikan pion pada papan halma
-    def __init__(self, id, playerType, x_position, y_position,finish= False):
+    def __init__(self, id, playerType, x_position, y_position,area= 0):
         self.position = (x_position, y_position)
         self.playerType = playerType
-        self.finish = finish
+        self.area = area
 
     def set_position(self, position,board):
         # set perubahan posisi pada pion 
@@ -33,7 +33,7 @@ class Pion():
 
     def isFinish(self):
         # TRUE jika pion sudah berada di goal
-        return self.finish
+        return self.area == 2
 
     def draw(self, board):
         # Menggambarkan pion ke antarmuka
