@@ -48,6 +48,11 @@ class Board(tk.Tk):
         self.canvas.grid(row=1, column=1,
             columnspan=self.b_size, rowspan=self.b_size)
 
+        # Set timer
+        self.timer = tk.Label(self, anchor="c", font=('digital-7', 16),
+            bg="#212121", fg="#fff", text="0")
+        self.timer.grid(row=0, column=self.b_size+2, sticky="ewns")
+
         # Create status label
         self.status = tk.Label(self, anchor="c", font=(None, 16),
             bg="#212121", fg="#fff", text="Green player's turn")
@@ -138,4 +143,8 @@ class Board(tk.Tk):
                 self.canvas.tag_bind(piece, "<1>", lambda event, row=row,
                     col=col: self.click_handler(row, col))
 
+        self.update()
+
+    def draw_timer(self, waktu):
+        self.timer.configure(text=waktu)
         self.update()

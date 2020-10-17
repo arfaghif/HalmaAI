@@ -154,10 +154,13 @@ class Halma():
         for move in moves:
             for to in move["to"]:
 
+                if self.time_out:
+                    return
+
                 # Bail out when we're out of time
                 # if time.time() > max_time:
                 if self.time_counter == 1:
-                    print("Hurry!")
+                    # print("Hurry!")
                     return best_val, best_move, prunes, boards
 
                 # Move piece to the move outlined
@@ -199,22 +202,24 @@ class Halma():
         else:
             return best_val, best_move, prunes, boards
 
-    def time_counting(self):
-        # become stop watch
-        self.time_out = False
-        self.finish_execute = False
-        self.time_counter = self.t_limit
+    # def time_counting(self):
+    #     # become stop watch
+    #     self.time_out = False
+    #     self.finish_execute = False
+    #     self.time_counter = self.t_limit
+    #     self.board_view.draw_timer(self.time_counter)
 
-        while(True):
-            time.sleep(1)
-            self.time_counter -= 1
+    #     while(True):
+    #         time.sleep(1)
+    #         self.time_counter -= 1
+    #         print(self.time_counter)
 
-            if (self.time_counter == 0):
-                self.time_out = True
-                break
+    #         if (self.time_counter == 0):
+    #             self.time_out = True
+    #             break
 
-            elif(self.finish_execute):
-                break
+    #         elif(self.finish_execute):
+    #             break
 
     def execute_computer_move(self):
 
@@ -230,17 +235,31 @@ class Halma():
         self.board_view.update()
         # max_time = time.time() + self.t_limit
 
-        t1 = Thread(target=self.time_counting, args=())
+        # t1 = Thread(target=self.time_counting, args=())
+        # t1.start()
+
+        self.time_out = False
+        self.finish_execute = False
+        self.time_counter = self.t_limit
+        self.board_view.draw_timer(self.time_counter)
+
+        t1 = Thread(target=self.minimax, args=(self.ply_depth, self.c_player))
         t1.start()
 
-        t2 = Thread(target=self.minimax, args=(self.ply_depth, self.c_player))
-        t2.start()
+
+        # while not(self.time_out or self.finish_execute):
+        #     pass
 
         while not(self.time_out or self.finish_execute):
-            pass
+            time.sleep(1)
+            self.time_counter -= 1
+            self.board_view.draw_timer(self.time_counter)
 
+            if (self.time_counter == 0):
+                self.time_out = True
+
+        # t1.join()
         t1.join()
-        t2.join()
 
         # Execute minimax search
         # start = time.time()
@@ -256,7 +275,7 @@ class Halma():
         # Print search result stats
         if self.finish_execute:
             print("complete")
-            print("Time to compute:", (self.t_limit-self.time_counter))
+            print("Time to compute:", (self.t_limit-self.time_counter), 's')
             print("Total boards generated:", self.boards)
             print("Total prune events:", self.prunes)
 
