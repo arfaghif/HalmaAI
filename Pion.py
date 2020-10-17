@@ -1,10 +1,12 @@
+from PlayerNumber import PlayerNumber
 from PlayerType import PlayerType
 
 class Pion():
     # Representasikan pion pada papan halma
-    def __init__(self, id, playerType, x_position, y_position,area= 0):
+    def __init__(self, id, player_number, player_type, x_position, y_position,area= 0):
         self.position = (x_position, y_position)
-        self.playerType = playerType
+        self.player_number = player_number
+        self.player_type = player_type
         self.area = area
 
     def set_position(self, position,board):
@@ -26,7 +28,7 @@ class Pion():
     def set_area(self, tile):
         if(tile.typeTile.value==0):
             self.area = 1
-        elif(self.playerType.value == tile.typeTile.value):
+        elif(self.player_number.value == tile.typeTile.value):
             self.area = 0
         else:
             self.area = 2
@@ -39,7 +41,7 @@ class Pion():
         if hover :
             board.canvas.itemconfig(self.canvas, activefill="cyan")
         else: 
-            board.canvas.itemconfig(self.canvas, activefill=self.playerType.get_color())
+            board.canvas.itemconfig(self.canvas, activefill=self.player_number.get_color())
 
     def isFinish(self):
         # TRUE jika pion sudah berada di goal
@@ -57,5 +59,5 @@ class Pion():
         x2 = (self.position[0] + 1) * cell_width - border_size / 2
         y2 = (self.position[1] + 1) * cell_height - border_size / 2
 
-        self.canvas = board.canvas.create_oval(x1, y1, x2, y2,tags="pion",  fill=self.playerType.get_color(),outline=None)
+        self.canvas = board.canvas.create_oval(x1, y1, x2, y2,tags="pion",  fill=self.player_number.get_color(),outline=None)
         

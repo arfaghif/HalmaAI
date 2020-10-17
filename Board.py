@@ -53,13 +53,13 @@ class Board(tk.Tk):
                 if (row + col < 4):
                     tile = Tile(row,col, TypeTile(1))
                     self.agentTiles.append(tile)
-                    pion = Pion(id,PlayerType.Agent,row,col)
+                    pion = Pion(id,PlayerNumber(1),PlayerType(1),row,col)
                     self.pions.append(pion)
                     id +=1
                 elif row + col > 2 * (size - 3):
                     tile = Tile(row,col, TypeTile(2))
                     self.playerTiles.append(tile)
-                    pion = Pion(id,PlayerType.Player,row,col)
+                    pion = Pion(id,PlayerNumber(2),PlayerType(1),row,col)
                     self.pions.append(pion)
                     id +=1
                 else:
