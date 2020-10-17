@@ -48,18 +48,12 @@ class GameState():
         pass
 
     
-    def isThereAPion(self, position):
+    def isThereAPion(self, x, y):
         # Kali aja butuh(?)
-        """
-        # for pion in self.listPionAgent:
-        #     if position.isEqual(pion.getPosition()):
-        #         return 1
-        # for pion in self.listPionPlayer:
-        #     if position.isEqual(pion.getPosition()):
-        #         return -1
-        # return 0
-        """
-        pass
+        for pion in (self.listPionAgent + self.listPionPlayer):
+            if pion.position == (x,y):
+                return True
+        return False
 
     def isValidMove(self, pion, x1, y1):
         # cek apakah tile perpindahan valid bagi si pion
@@ -73,9 +67,8 @@ class GameState():
         if x<0 or x >= self.board.size or y <0 or y>= self.board.size :
             return False
         #there is another pion
-        for pion in (self.listPionAgent + self.listPionPlayer):
-            if pion.position == (x,y):
-                return False
+        if self.isThereAPion(x,y) : return False
+        
         
         return True
     
