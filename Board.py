@@ -55,11 +55,13 @@ class Board(tk.Tk):
                     self.agentTiles.append(tile)
                     pion = Pion(id,PlayerType.Agent,row,col)
                     self.pions.append(pion)
+                    id +=1
                 elif row + col > 2 * (size - 3):
                     tile = Tile(row,col, TypeTile(2))
                     self.playerTiles.append(tile)
                     pion = Pion(id,PlayerType.Player,row,col)
                     self.pions.append(pion)
+                    id +=1
                 else:
                     tile = Tile(row,col, TypeTile(0))
                 self.tiles[row] [col] = tile
