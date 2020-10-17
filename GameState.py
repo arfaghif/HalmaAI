@@ -120,6 +120,33 @@ class GameState():
             self.rekursive_move(pion,-1,-1,-1,-1,validMoves)
 
         return validMoves
+    
+    def rekursive_move(self, pion, x1, y1,x2,y2, li):
+        x = pion.position[0]
+        y = pion.position[1]
+        # base
+        if (not self.isThereAPion(x+x1,y+y1) or (not self.isValidMove(pion, x1 + x2, y1 +y2)) or ([pion, (x + x1 +x2 , y + y1 + y2)] in li) ) : return
+        # rec
+        else:
+            li.append([pion, (x + x1 +x2 , y + y1 + y2)])
+            # self.rekursive_move(pion,x1 + 2*x2, y1 + 2*y2 ,li)
+            # print("2", (x,y),(x + x1 +x2 , y + y1 + y2))
+            # up
+            self.rekursive_move(pion, x1 + x2, y1 + y2+1, 0, 1, li)
+            # down
+            self.rekursive_move(pion, x1 + x2, y1 + y2-1, 0,-1, li)
+            # left
+            self.rekursive_move(pion, x1 + x2-1, y1 + y2 , -1,0, li)
+            # right
+            self.rekursive_move(pion, x1 + x2 +1, y1 + y2 ,1,0, li)
+            # upright
+            self.rekursive_move(pion, x1 + x2+1 , y1 + y2+1,1,1  , li)
+            # downright
+            self.rekursive_move(pion, x1 + x2+1, y1 + y2-1,1,-1 ,li)
+            # upleft
+            self.rekursive_move(pion, x1 + x2-1, y1 + y2+1,-1,1 ,li)
+            # downleft
+            self.rekursive_move(pion, x1 + x2-1, y1 + y2-1 , -1,-1,li)
             
     def pion_on_click(self, pion):
         # Aksi ketika pion di klik
@@ -158,39 +185,36 @@ class GameState():
         temp = self.list_pion_player1
         self.list_pion_player1 = self.list_pion_player2
         self.list_pion_player2 = temp
-        # mengaktifkan tombol player saat ini
-        for pion in self.list_pion_player2 :
-            pion.set_hover(self.board,True)
-            self.board.canvas.tag_bind(pion.canvas, "<1>", lambda event, pion=pion: self.pion_on_click(pion))
-        self.board.update()
+        if (self.list_pion_player1[0].player_type.value == 1):
+            # Player adalah human
+            # mengaktifkan tombol player saat ini
+            for pion in self.list_pion_player2 :
+                pion.set_hover(self.board,True)
+                self.board.canvas.tag_bind(pion.canvas, "<1>", lambda event, pion=pion: self.pion_on_click(pion))
+            self.board.update()
+        
+        elif (self.list_pion_player1[0].player_type.value == 2):
+            # minimax
+            act = self.minimax(self.depth,True,3)
+            pion = act [0]
+            x = act [1][0]
+            y = act [1][1]
+            pion.set_position((x,y),self.board)
+            pion.set_area(self.board.tiles[x][y])
+            self.next_turn()
+
+        else:
+            # local search + minimax
+            act = self.local_search_minimax((self.depth,True,3))
+            pion = act [0]
+            x = act [1][0]
+            y = act [1][1]
+            pion.set_position((x,y),self.board)
+            pion.set_area(self.board.tiles[x][y])
+            self.next_turn()
+
                  
 
-    def rekursive_move(self, pion, x1, y1,x2,y2, li):
-        x = pion.position[0]
-        y = pion.position[1]
-        # base
-        if (not self.isThereAPion(x+x1,y+y1) or (not self.isValidMove(pion, x1 + x2, y1 +y2)) or ([pion, (x + x1 +x2 , y + y1 + y2)] in li) ) : return
-        # rec
-        else:
-            li.append([pion, (x + x1 +x2 , y + y1 + y2)])
-            # self.rekursive_move(pion,x1 + 2*x2, y1 + 2*y2 ,li)
-            # print("2", (x,y),(x + x1 +x2 , y + y1 + y2))
-            # up
-            self.rekursive_move(pion, x1 + x2, y1 + y2+1, 0, 1, li)
-            # down
-            self.rekursive_move(pion, x1 + x2, y1 + y2-1, 0,-1, li)
-            # left
-            self.rekursive_move(pion, x1 + x2-1, y1 + y2 , -1,0, li)
-            # right
-            self.rekursive_move(pion, x1 + x2 +1, y1 + y2 ,1,0, li)
-            # upright
-            self.rekursive_move(pion, x1 + x2+1 , y1 + y2+1,1,1  , li)
-            # downright
-            self.rekursive_move(pion, x1 + x2+1, y1 + y2-1,1,-1 ,li)
-            # upleft
-            self.rekursive_move(pion, x1 + x2-1, y1 + y2+1,-1,1 ,li)
-            # downleft
-            self.rekursive_move(pion, x1 + x2-1, y1 + y2-1 , -1,-1,li)
         
 
     def minimax(self,depth, maks, maks_depth):
@@ -288,3 +312,7 @@ class GameState():
                 return v
 
 
+    def local_search_minimax(self,depth, maks, maks_depth):
+        # implement local search + minimax disini
+        # return aksi ([pion,position])
+        pass
