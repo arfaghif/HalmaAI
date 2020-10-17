@@ -86,27 +86,35 @@ class GameState():
             #   up
             if self.isValidMove(pion,0,1):
                 validMoves.append([pion, (x,y+1)])
+            self.rekursive_move(pion,0,1,0,1,validMoves)
             #bottom
             if self.isValidMove(pion,0,-1):
                 validMoves.append([pion, (x,y-1)])
+            self.rekursive_move(pion,0,-1,0,-1,validMoves)
             #   right
             if self.isValidMove(pion,1,0):
                 validMoves.append([pion, (x+1,y)])
+            self.rekursive_move(pion,1,0,1,0,validMoves)
             #   left
             if self.isValidMove(pion,-1,0):
                 validMoves.append([pion, (x-1,y)])
+            self.rekursive_move(pion,-1,0,-1,0,validMoves)
             #   upright
             if self.isValidMove(pion,1,1):
                 validMoves.append([pion, (x+1,y+1)])
+            self.rekursive_move(pion,1,1,1,1,validMoves)
             #   bottomright
             if self.isValidMove(pion,1,-1):
                 validMoves.append([pion, (x+1,y-1)])
+            self.rekursive_move(pion,1,-1,1,-1,validMoves)
             #   upleft
             if self.isValidMove(pion,-1,1):
                 validMoves.append([pion, (x-1,y+1)])
+            self.rekursive_move(pion,-1,1,-1,1,validMoves)
             #   bottomleft
             if self.isValidMove(pion,-1,-1):
                 validMoves.append([pion, (x-1,y-1)])
+            self.rekursive_move(pion,-1,-1,-1,-1,validMoves)
 
         return validMoves
             
@@ -116,6 +124,8 @@ class GameState():
 
         self.board.reset_tiles()
         valid_moves = self.validMovesAgent(self.listPionPlayer)
+        # for valid_move in valid_moves:
+        #     print(valid_move[0].position,valid_move[1])
 
         for valid_move in valid_moves:
             if valid_move[0] == pion :
@@ -152,9 +162,41 @@ class GameState():
         self.board.update()
                  
 
-    def Rekursive(self, pion, x, y):
-        # Untuk rekursif valid move (?)
-        pass
+    def rekursive_move(self, pion, x1, y1,x2,y2, li):
+        x = pion.position[0]
+        y = pion.position[1]
+        # if x1 == 0:
+        #     x2 = 0
+        # else :
+        #     x2 = x1//abs(x1)
+        # if y1 == 0:
+        #     y2 = 0
+        # else :
+        #     y2 = y1//abs(y1)
+        # base
+        if (not self.isThereAPion(x+x1,y+y1) or (not self.isValidMove(pion, x1 + x2, y1 +y2)) or ([pion, (x + x1 +x2 , y + y1 + y2)] in li) ) : return
+        # rec
+        else:
+            li.append([pion, (x + x1 +x2 , y + y1 + y2)])
+            # self.rekursive_move(pion,x1 + 2*x2, y1 + 2*y2 ,li)
+            # print("2", (x,y),(x + x1 +x2 , y + y1 + y2))
+            # up
+            self.rekursive_move(pion, x1 + x2, y1 + y2+1, 0, 1, li)
+            # down
+            self.rekursive_move(pion, x1 + x2, y1 + y2-1, 0,-1, li)
+            # left
+            self.rekursive_move(pion, x1 + x2-1, y1 + y2 , -1,0, li)
+            # right
+            self.rekursive_move(pion, x1 + x2 +1, y1 + y2 ,1,0, li)
+            # upright
+            self.rekursive_move(pion, x1 + x2+1 , y1 + y2+1,1,1  , li)
+            # downright
+            self.rekursive_move(pion, x1 + x2+1, y1 + y2-1,1,-1 ,li)
+            # upleft
+            self.rekursive_move(pion, x1 + x2-1, y1 + y2+1,-1,1 ,li)
+            # downleft
+            self.rekursive_move(pion, x1 + x2-1, y1 + y2-1 , -1,-1,li)
+        
 
     def minimax(self,depth, maks):
         # minimax
