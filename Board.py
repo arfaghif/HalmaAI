@@ -42,6 +42,11 @@ class Board(tk.Tk):
         Akhir bagian yang copas
         """
 
+        # Merepresentasekan timer
+        self.timer = tk.Label(self, anchor="c", font=('digital-7', 16),
+            bg="#212121", fg="#fff", text="0")
+        self.timer.grid(row=0, column=self.size+2, sticky="ewns")
+
         # Representasikan papan yang terdiri dari kumpulan tile
         self.tiles = [[None]*size for i in range(size)]
         self.player1_tiles = []
@@ -85,4 +90,7 @@ class Board(tk.Tk):
             for j in range (self.size) :
                 self.tiles[i][j].reset(self)
 
-
+    def draw_timer(self, waktu):
+        # Mengganti waktu timer
+        self.timer.configure(text=waktu)
+        self.update()
