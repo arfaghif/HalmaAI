@@ -1,7 +1,7 @@
 from Pion import *
 from Board import *
 import math
-import random
+import time
 
 class GameState():
     # Representasikan gamestate
@@ -64,7 +64,7 @@ class GameState():
     def utilityFunction(self,player_number):
         # to do
         def point_distance(p1,p2):
-            return math.sqrt((p2[0]-p1[0])**2 + (p2[1]-p2[1])**2)
+            return math.sqrt((p2[0]-p1[0])**2 + (p2[1]-p1[1])**2)
         
         if self.list_pion_player1[0].player_number == player_number:
             pions_agent = self.list_pion_player1
@@ -75,27 +75,23 @@ class GameState():
             pions_opp = self.list_pion_player1
 
         if self.list_pion_player1[0].player_number == 1 :
-            target_agent = (9,9)
+            target_agent = (self.board.size-1,self.board.size-1)
             target_opp = (0,0)
         else :
             target_agent = (0,0)
-            target_opp = (9,9)
+            target_opp = (self.board.size-1,self.board.size-1)
         
 
         val = 0
         for pion in pions_opp:
             if (pion.isFinish()) : continue
-            maks = - math.inf
             dist = point_distance(pion.position,target_opp)
-            maks = max (maks,dist)
-            val += maks
+            val += dist
 
         for pion in pions_agent:
             if (pion.isFinish()) : continue
-            maks = - math.inf
             dist = point_distance(pion.position,target_agent)
-            maks = max (maks,dist)
-            val -= maks
+            val -= dist
         #value = 0
         return val
 
@@ -140,10 +136,6 @@ class GameState():
     def validMovesAgent(self,listOfPion):
         # menghasilkan pergerakan pion yang valid dalam setiap gamestate
         # output berupa array dengan elemennya pasangan dari pion dan posisi tujuan
-        """
-        To do :
-        Yang loncat loncat pion lain belum diimplementasikan
-        """
         validMoves = []
         for pion in listOfPion:
             x = pion.position[0]
@@ -265,12 +257,15 @@ class GameState():
         
         elif (self.list_pion_player1[0].player_type.value == 2):
             # minimax
-            act = self.minimax(self.depth,True,2,self.list_pion_player1[0].player_number)
+            # b = time.time()
+            act = self.minimax(self.depth,True,3,self.list_pion_player1[0].player_number)
+            # print(time.time()-b)
             pion = act [0]
             x = act [1][0]
             y = act [1][1]
             pion.set_position((x,y),self.board)
             pion.set_area(self.board.tiles[x][y])
+
             self.next_turn()
 
         else:
@@ -295,18 +290,26 @@ class GameState():
         if(maks):
             v = -math.inf
             action = None
-            for validmove in self.validMovesAgent(self.list_pion_player1):
+            # b= time.time_ns()
+            valid_moves = self.validMovesAgent(self.list_pion_player1)
+            # print(time.time_ns()-b)
+            for validmove in valid_moves:
+
                 temp = [e for e in self.list_pion_player1 if e!=validmove[0]]
+                
                 x = validmove[1][0]
                 y = validmove[1][1]
                 pion = Pion(validmove[0].id, validmove[0].player_number,validmove[0].player_type,x,y)
                 pion.set_area(self.board.tiles[x][y])
                 temp.append(pion)
                 gameState = GameState(self.board,self.list_pion_player2,temp,depth+1,True)
+                
                 val = gameState.minimax(depth+1,False,maks_depth,player_number)
+                
                 v = max (v, val )
                 if depth==0 and val == v :
                     action = validmove
+
             if (depth==0):
                 return action
             else:
@@ -314,7 +317,11 @@ class GameState():
         else:
             v = math.inf
             action = None
-            for validmove in self.validMovesAgent(self.list_pion_player1):
+            valid_moves = self.validMovesAgent(self.list_pion_player1)
+            # if depth == 1 :
+            #     b= time.time_ns()
+            for validmove in valid_moves:
+                
                 temp = [e for e in self.list_pion_player1 if e!=validmove[0]]
                 x = validmove[1][0]
                 y = validmove[1][1]
@@ -326,6 +333,8 @@ class GameState():
                 v = min (v, val )
                 if(depth==0 and val == v) :
                     action = validmove
+            # if depth == 1:
+            #     print(time.time_ns()-b)
             if (depth==0):
                 return action
             else:
