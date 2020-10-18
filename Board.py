@@ -1,6 +1,7 @@
 import tkinter as tk
 from Tile import *
 from Pion import *
+import threading
 
 class Board(tk.Tk):
     # Merepresentasikan board sebagai papan permainan. Papan permainan berupa GUI TkInter (inherrit)
@@ -94,3 +95,6 @@ class Board(tk.Tk):
         # Mengganti waktu timer
         self.timer.configure(text=waktu)
         self.update()
+
+    def set_thread(self,t):
+        self.thread = t

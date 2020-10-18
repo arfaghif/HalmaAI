@@ -38,9 +38,16 @@ class GameState():
                     self.board.canvas.tag_bind(pion.canvas, "<1>", lambda event, pion=pion: self.pion_on_click(pion))
 
                 self.board.update()
+                curPlayer = 1
+                for i in range(15,-1,-1):
+                    if (self.list_pion_player1[0].player_number.value!=1):
+                        break
+                    self.board.draw_timer(str(i))
+                    time.sleep(1)
+
             elif (self.list_pion_player1[0].player_type.value == 2):
                 # minimax
-                act = self.minimax(self.depth,True,2,self.list_pion_player1[0].player_number)
+                act = self.minimax(self.depth,True,3,self.list_pion_player1[0].player_number)
                 pion = act [0]
                 x = act [1][0]
                 y = act [1][1]
@@ -58,10 +65,6 @@ class GameState():
 
             # start tkInter
             self.board.mainloop()
-
-            
-
-
 
 
     def isTerminalState(self):
@@ -84,7 +87,7 @@ class GameState():
             pions_agent = self.list_pion_player2
             pions_opp = self.list_pion_player1
 
-        if self.list_pion_player1[0].player_number == 1 :
+        if pions_agent[0].player_number.value == 1 :
             target_agent = (self.board.size-1,self.board.size-1)
             target_opp = (0,0)
         else :
@@ -268,7 +271,7 @@ class GameState():
         elif (self.list_pion_player1[0].player_type.value == 2):
             # minimax
             # b = time.time()
-            act = self.minimax(self.depth,True,3,self.list_pion_player1[0].player_number)
+            act = self.minimax(self.depth,True,2,self.list_pion_player1[0].player_number)
             # print(time.time()-b)
             pion = act [0]
             x = act [1][0]
