@@ -48,7 +48,8 @@ class GameState():
 
     def utilityFunction(self):
         # to do
-        pass
+        #value = 0
+        #pass
 
     
     def isThereAPion(self, x, y):
@@ -72,7 +73,20 @@ class GameState():
         #there is another pion
         if self.isThereAPion(x,y) : return False
 
-        
+        #already in target
+        if self.isFinish() :
+            if ( x = pion.position[0]*-1 and y = pion.position[1]*-1) : return False
+
+        #Still in base
+        if self.area=0:
+            if not (self.isThereAPion(x,y)) : return True
+            if not (x<0 or x >= self.board.size or y <0 or y>= self.board.size) : return True
+
+
+        #Neutral Ground
+        if self.area=1:
+            if not (self.isThereAPion(x,y) and (x<0 or x>=self.board.size or y<0 or y>=self.board.size)): return True
+
         return True
     
     def validMovesAgent(self,listOfPion):
