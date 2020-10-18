@@ -297,59 +297,38 @@ class GameState():
         # untested
         if self.isTerminalState()!=0 or depth==maks_depth : return self.utilityFunction(player_number)
 
-        if(maks):
+        if (maks):
             v = -math.inf
-            action = None
-            # b= time.time_ns()
-            valid_moves = self.validMovesAgent(self.list_pion_player1)
-            # print(time.time_ns()-b)
-            for validmove in valid_moves:
-
-                temp = [e for e in self.list_pion_player1 if e!=validmove[0]]
-                
-                x = validmove[1][0]
-                y = validmove[1][1]
-                pion = Pion(validmove[0].id, validmove[0].player_number,validmove[0].player_type,x,y)
-                pion.set_area(self.board.tiles[x][y])
-                temp.append(pion)
-                gameState = GameState(self.board,self.list_pion_player2,temp,depth+1,True)
-                
-                val = gameState.minimax(depth+1,False,maks_depth,player_number)
-                
-                v = max (v, val )
-                if depth==0 and val == v :
-                    action = validmove
-
-            if (depth==0):
-                return action
-            else:
-                return v
-        else:
+        else : # not(maks)
             v = math.inf
-            action = None
-            valid_moves = self.validMovesAgent(self.list_pion_player1)
-            # if depth == 1 :
-            #     b= time.time_ns()
-            for validmove in valid_moves:
-                
-                temp = [e for e in self.list_pion_player1 if e!=validmove[0]]
-                x = validmove[1][0]
-                y = validmove[1][1]
-                pion = Pion(validmove[0].id, validmove[0].player_number,validmove[0].player_type,x,y)
-                pion.set_area(self.board.tiles[x][y])
-                temp.append(pion)
-                gameState = GameState(self.board,self.list_pion_player2,temp,depth+1,True)
-                val = gameState.minimax(depth+1,True,maks_depth,player_number)
-                v = min (v, val )
-                if(depth==0 and val == v) :
-                    action = validmove
-            # if depth == 1:
-            #     print(time.time_ns()-b)
-            if (depth==0):
-                return action
-            else:
-                return v
 
+        action = None
+        valid_moves = self.validMovesAgent(self.list_pion_player1)
+
+        for validmove in valid_moves:
+            temp = [e for e in self.list_pion_player1 if e!=validmove[0]]
+                
+            x = validmove[1][0]
+            y = validmove[1][1]
+            pion = Pion(validmove[0].id, validmove[0].player_number,validmove[0].player_type,x,y)
+            pion.set_area(self.board.tiles[x][y])
+            temp.append(pion)
+            gameState = GameState(self.board,self.list_pion_player2,temp,depth+1,True)
+
+            val = gameState.minimax(depth+1,not(maks),maks_depth,player_number)
+
+            if (maks):
+                v = max(v, val)
+            else: # not maks
+                v = min(v, val)
+
+            if depth==0 and val == v :
+                action = validmove
+
+        if (depth==0):
+            return action
+        else:
+            return v
 
     def minimaxAB(self,depth, maks,alpha,beta,maks_depth,player_number):
         # minimax pruning
