@@ -31,14 +31,25 @@ class GameState():
 
         # Setting pion dari player yang mendapat giliran untuk dapat ditekan untuk memilih aksi
         if not virtual:
-            for pion in self.list_pion_player1 :
-                pion.set_hover(self.board,True)
-                self.board.canvas.tag_bind(pion.canvas, "<1>", lambda event, pion=pion: self.pion_on_click(pion))
+            if (self.list_pion_player1[0].player_type.value==1):
+                for pion in self.list_pion_player1 :
+                    pion.set_hover(self.board,True)
+                    self.board.canvas.tag_bind(pion.canvas, "<1>", lambda event, pion=pion: self.pion_on_click(pion))
 
-            self.board.update()
-
+                self.board.update()
+            if (self.list_pion_player1[0].player_type.value == 2):
+                # minimax
+                act = self.minimax(self.depth,True,2,self.list_pion_player1[0].player_number)
+                pion = act [0]
+                x = act [1][0]
+                y = act [1][1]
+                pion.set_position((x,y),self.board)
+                pion.set_area(self.board.tiles[x][y])
+                self.next_turn()
             # start tkInter
             self.board.mainloop()
+
+            
 
 
 
@@ -58,31 +69,32 @@ class GameState():
         if self.list_pion_player1[0].player_number == player_number:
             pions_agent = self.list_pion_player1
             pions_opp = self.list_pion_player2
-            tiles_agent = self.board.player1_tiles
-            tiles_opp = self.board.player2_tiles
 
         else:
             pions_agent = self.list_pion_player2
             pions_opp = self.list_pion_player1
-            tiles_agent = self.board.player2_tiles
-            tiles_opp = self.board.player1_tiles
+
+        if self.list_pion_player1[0].player_number == 1 :
+            target_agent = (9,9)
+            target_opp = (0,0)
+        else :
+            target_agent = (0,0)
+            target_opp = (9,9)
         
 
         val = 0
         for pion in pions_opp:
             if (pion.isFinish()) : continue
             maks = - math.inf
-            for tile in tiles_agent:
-                dist = point_distance(pion.position,tile.position)
-                maks = max (maks,dist)
+            dist = point_distance(pion.position,target_opp)
+            maks = max (maks,dist)
             val += maks
 
         for pion in pions_agent:
             if (pion.isFinish()) : continue
             maks = - math.inf
-            for tile in tiles_opp:
-                dist = point_distance(pion.position,tile.position)
-                maks = max (maks,dist)
+            dist = point_distance(pion.position,target_agent)
+            maks = max (maks,dist)
             val -= maks
         #value = 0
         return val
@@ -236,6 +248,7 @@ class GameState():
         # print(self.list_pion_player2[0].position)
         # print(self.list_pion_player1[0].position)
         # print(self.list_pion_player2[0].position)
+        if(self.isTerminalState()) : return
         temp = self.list_pion_player1
         self.list_pion_player1 = self.list_pion_player2
         self.list_pion_player2 = temp
@@ -311,7 +324,7 @@ class GameState():
                 gameState = GameState(self.board,self.list_pion_player2,temp,depth+1,True)
                 val = gameState.minimax(depth+1,True,maks_depth,player_number)
                 v = min (v, val )
-                if(depth==0) and val < v :
+                if(depth==0 and val == v) :
                     action = validmove
             if (depth==0):
                 return action
@@ -337,7 +350,7 @@ class GameState():
                 gameState = GameState(self.board,self.list_pion_player2,temp,depth+1,True)
                 val = gameState.minimaxAB(depth+1,False,alpha,beta,maks_depth,player_number)
                 v = max (v, val )
-                if(depth==0) and val > v :
+                if(depth==0 and val == v) :
                     # masuk
                     action = validmove
                 if v >= beta: return v
@@ -360,10 +373,10 @@ class GameState():
                 gameState = GameState(self.board,self.list_pion_player2,temp,depth+1,True)
                 val = gameState.minimaxAB(depth+1,True,alpha,beta,maks_depth,player_number)
                 v = min (v, val )
-                if(depth==0) and val < v :
+                if(depth==0 and val == v) :
                     action = validmove
                 if v <= alpha:return v
-                alpha = min(beta,v)
+                beta = min(beta,v)
             if (depth==0):
                 print("test")
                 return action
