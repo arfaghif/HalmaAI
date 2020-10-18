@@ -59,7 +59,7 @@ class Board(tk.Tk):
                 elif row + col > 2 * (size - 3):
                     tile = Tile(row,col, TypeTile(2))
                     self.player2_tiles.append(tile)
-                    pion = Pion(id,PlayerNumber(2),PlayerType(2),row,col)
+                    pion = Pion(id,PlayerNumber(2),PlayerType(3),row,col)
                     self.pions.append(pion)
                     id +=1
                 else:
