@@ -97,19 +97,21 @@ class Board(tk.Tk):
         self.timer.configure(text=waktu)
         self.update()
 
-    def countdown(self,waktu):
+    def countdown(self,waktu,player):
         
         self.timeout = waktu
         while self.timeout > 0:
-            self.draw_timer(str(self.timeout))
+            if (player):
+                self.draw_timer(str(self.timeout))
             time.sleep(1)
             self.timeout -= 1
 
-    def create_thread(self):
-        self.thread_timer = threading.Thread(target=self.countdown,args=(self.maks_time,))
+    def create_thread(self,player):
+        self.thread_timer = threading.Thread(target=self.countdown,args=(self.maks_time,player))
         self.thread_timer.start()
 
     def stop_thread(self):
         self.timeout = 0
         self.draw_timer("0")
+        self.update()
         self.thread_timer.join()
