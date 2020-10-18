@@ -1,6 +1,7 @@
 from Pion import *
 from Board import *
 import math
+import threading
 import time
 from operator import itemgetter
 
@@ -32,18 +33,13 @@ class GameState():
 
         # Setting pion dari player yang mendapat giliran untuk dapat ditekan untuk memilih aksi
         if not virtual:
+            self.board.create_thread()
             if (self.list_pion_player1[0].player_type.value==1):
                 for pion in self.list_pion_player1 :
                     pion.set_hover(self.board,True)
                     self.board.canvas.tag_bind(pion.canvas, "<1>", lambda event, pion=pion: self.pion_on_click(pion))
 
                 self.board.update()
-                curPlayer = 1
-                for i in range(15,-1,-1):
-                    if (self.list_pion_player1[0].player_number.value!=1):
-                        break
-                    self.board.draw_timer(str(i))
-                    time.sleep(1)
 
             elif (self.list_pion_player1[0].player_type.value == 2):
                 # minimax
@@ -248,15 +244,18 @@ class GameState():
         
 
     def next_turn(self):
+        self.board.stop_thread()
         # nonaktifkan terlebih dahulu tombol pion player sebelumnya
         # print(self.list_pion_player1[0].position)
         # print(self.list_pion_player2[0].position)
         # print(self.list_pion_player1[0].position)
         # print(self.list_pion_player2[0].position)
         if(self.isTerminalState()) : return
+    
         temp = self.list_pion_player1
         self.list_pion_player1 = self.list_pion_player2
         self.list_pion_player2 = temp
+        self.board.create_thread()
         # print(self.list_pion_player1[0].position)
         # print(self.list_pion_player2[0].position)
         if (self.list_pion_player1[0].player_type.value == 1):
@@ -271,11 +270,13 @@ class GameState():
         elif (self.list_pion_player1[0].player_type.value == 2):
             # minimax
             # b = time.time()
-            act = self.minimax(self.depth,True,2,self.list_pion_player1[0].player_number)
+            myThread = threading.Thread(target =self.minimax, args =(self.depth,True,2,self.list_pion_player1[0].player_number))
             # print(time.time()-b)
-            pion = act [0]
-            x = act [1][0]
-            y = act [1][1]
+            myThread.start()
+            myThread.join()
+            pion = self.act [0]
+            x = self.act [1][0]
+            y = self.act [1][1]
             pion.set_position((x,y),self.board)
             pion.set_area(self.board.tiles[x][y])
 
@@ -283,10 +284,14 @@ class GameState():
 
         else:
             # local search + minimax
-            act = self.local_search_minimax(self.depth,True,3,self.list_pion_player1[0].player_number)
-            pion = act [0]
-            x = act [1][0]
-            y = act [1][1]
+            myThread = threading.Thread(target =self.local_search_minimax, args =(self.depth,True,2,self.list_pion_player1[0].player_number))
+            myThread.start()
+            # for thread in threading.enumerate(): 
+            #     print(thread.name)
+            myThread.join()
+            pion = self.act [0]
+            x = self.act [1][0]
+            y = self.act [1][1]
             pion.set_position((x,y),self.board)
             pion.set_area(self.board.tiles[x][y])
             self.next_turn()
@@ -326,7 +331,7 @@ class GameState():
                 v = min(v, val)
 
             if depth==0 and val == v :
-                action = validmove
+                self.act = validmove
 
         if (depth==0):
             return action
@@ -432,9 +437,9 @@ class GameState():
                 v = min(v, val)
 
             if depth==0 and val == v :
-                action = validmove
+                self.act = validmove
 
         if (depth==0):
-            return action
+            return
         else:
             return v

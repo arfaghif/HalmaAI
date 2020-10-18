@@ -2,11 +2,12 @@ import tkinter as tk
 from Tile import *
 from Pion import *
 import threading
+import time
 
 class Board(tk.Tk):
     # Merepresentasikan board sebagai papan permainan. Papan permainan berupa GUI TkInter (inherrit)
     
-    def __init__(self, size):
+    def __init__(self, size,t):
         tk.Tk.__init__(self)
         self.size = size
         self.canvas = tk.Canvas(self, width=550, height=550, bg="#fff",highlightthickness=0)
@@ -42,7 +43,7 @@ class Board(tk.Tk):
         """
         Akhir bagian yang copas
         """
-
+        self.maks_time = t
         # Merepresentasekan timer
         self.timer = tk.Label(self, anchor="c", font=('digital-7', 16),
             bg="#212121", fg="#fff", text="0")
@@ -96,5 +97,19 @@ class Board(tk.Tk):
         self.timer.configure(text=waktu)
         self.update()
 
-    def set_thread(self,t):
-        self.thread = t
+    def countdown(self,waktu):
+        
+        self.timeout = waktu
+        while self.timeout > 0:
+            self.draw_timer(str(self.timeout))
+            time.sleep(1)
+            self.timeout -= 1
+
+    def create_thread(self):
+        self.thread_timer = threading.Thread(target=self.countdown,args=(self.maks_time,))
+        self.thread_timer.start()
+
+    def stop_thread(self):
+        self.timeout = 0
+        self.draw_timer("0")
+        self.thread_timer.join()
