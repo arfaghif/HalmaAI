@@ -148,7 +148,7 @@ class GameState():
             return False
 
         # Neutral Ground
-        if pion.isNeutralGround() and (self.board.tiles[x][y].typeTile.value == 1 or self.board.tiles[x][y].typeTile.value == pion.player_number):
+        if pion.isNeutralGround() and ( self.board.tiles[x][y].typeTile.value == pion.player_number):
             return False
 
         return True
