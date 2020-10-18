@@ -48,6 +48,10 @@ class Pion():
         # TRUE jika pion sudah berada di goal
         return self.area == 2
 
+    def isNeutralGround(self):
+        # TRUE jika pion masih berada di base
+        return self.area == 1
+
     def draw(self, board):
         # Menggambarkan pion ke antarmuka
 

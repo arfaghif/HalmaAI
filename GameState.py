@@ -143,19 +143,13 @@ class GameState():
         #there is another pion
         if self.isThereAPion(x,y) : return False
 
-        #already in target
-        # if self.isFinish() :
-        #     if ( x == pion.position[0]*-1 and y == pion.position[1]*-1) : return False
+        # Already in target
+        if pion.isFinish() and (self.board.tiles[x][y].typeTile.value == 0 or self.board.tiles[x][y].typeTile.value == pion.player_number):
+            return False
 
-        # #Still in base
-        # if self.area==0:
-        #     if not (self.isThereAPion(x,y)) : return True
-        #     if not (x<0 or x >= self.board.size or y <0 or y>= self.board.size) : return True
-
-
-        # #Neutral Ground
-        # if self.area==1:
-        #     if not (self.isThereAPion(x,y) and (x<0 or x>=self.board.size or y<0 or y>=self.board.size)): return True
+        # Neutral Ground
+        if pion.isNeutralGround() and (self.board.tiles[x][y].typeTile.value == 1 or self.board.tiles[x][y].typeTile.value == pion.player_number):
+            return False
 
         return True
     
