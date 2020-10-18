@@ -4,6 +4,7 @@ from PlayerType import PlayerType
 class Pion():
     # Representasikan pion pada papan halma
     def __init__(self, id, player_number, player_type, x_position, y_position,area= 0):
+        self.id = id
         self.position = (x_position, y_position)
         self.player_number = player_number
         self.player_type = player_type

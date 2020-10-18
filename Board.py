@@ -44,22 +44,22 @@ class Board(tk.Tk):
 
         # Representasikan papan yang terdiri dari kumpulan tile
         self.tiles = [[None]*size for i in range(size)]
-        self.agentTiles = []
-        self.playerTiles =[]
+        self.player1_tiles = []
+        self.player2_tiles =[]
         self.pions = []
         id = 0
         for row in range(size):
             for col in range(size):
                 if (row + col < 4):
                     tile = Tile(row,col, TypeTile(1))
-                    self.agentTiles.append(tile)
+                    self.player1_tiles.append(tile)
                     pion = Pion(id,PlayerNumber(1),PlayerType(1),row,col)
                     self.pions.append(pion)
                     id +=1
                 elif row + col > 2 * (size - 3):
                     tile = Tile(row,col, TypeTile(2))
-                    self.playerTiles.append(tile)
-                    pion = Pion(id,PlayerNumber(2),PlayerType(1),row,col)
+                    self.player2_tiles.append(tile)
+                    pion = Pion(id,PlayerNumber(2),PlayerType(2),row,col)
                     self.pions.append(pion)
                     id +=1
                 else:
