@@ -30,7 +30,8 @@ class GameState():
                 if(pion.player_number == PlayerNumber(2)):
                     self.list_pion_player2.append(pion)
         self.depth = depth      
-
+        self.total_time_player1 = 0
+        self.total_time_player2 = 0
         
         if not virtual: #Bukan merupakan minimax gamestate
             self.calculate_max_depth()
@@ -39,15 +40,18 @@ class GameState():
                 for pion in self.list_pion_player1 :
                     pion.set_hover(self.board,True)
                     self.board.canvas.tag_bind(pion.canvas, "<1>", lambda event, pion=pion: self.pion_on_click(pion))
+                self.before_time = time.time()
                 self.board.update()
 
             elif (self.list_pion_player1[0].player_type.value == 2):
                 # AI minimax
                 self.board.create_thread()
                 myThread = threading.Thread(target =self.minimax_ab, args =(self.depth,True,self.maks_depth_minimax,-math.inf, math.inf, self.list_pion_player1[0].player_number))
+                self.before_time = time.time()
                 myThread.start()
                 myThread.join()
                 self.board.stop_thread()
+                self.total_time_player1 += time.time() - self.before_time
                 pion = self.act [0]
                 x = self.act [1][0]
                 y = self.act [1][1]
@@ -59,9 +63,11 @@ class GameState():
                 # AI local search + minimax
                 self.board.create_thread()
                 myThread = threading.Thread(target =self.local_search_minimax, args =(self.depth,True,self.maks_depth_minimax_local,self.list_pion_player1[0].player_number))
+                self.before_time = time.time()
                 myThread.start()
                 myThread.join()
                 self.board.stop_thread()
+                self.total_time_player1 += time.time() - self.before_time
                 pion = self.act [0]
                 x = self.act [1][0]
                 y = self.act [1][1]
@@ -250,6 +256,10 @@ class GameState():
         # Pion akan berpindah ke tile tujuan
         # dilakukan penonaktofkan tombol tile
         # Akan juga dilanjutkan turn nya ke lawan
+        if(self.list_pion_player1[0].player_number.value==1):
+            self.total_time_player1 += time.time() - self.before_time
+        else :
+            self.total_time_player2 += time.time() - self.before_time
         self.board.reset_tiles()
         pion.set_position(position,self.board)
         pion.set_area(self.board.tiles[position[0]][position[1]])
@@ -264,7 +274,7 @@ class GameState():
         # Cek apakah sudah ada pemenang
         if(self.isTerminalState()) :
             self.board.label.configure(text = "Player " + str(self.list_pion_player1[0].player_number.value) + " WIN")
-            messagebox.showinfo("End Game", "Player " + str(self.list_pion_player1[0].player_number.value) + " WIN")
+            messagebox.showinfo("End Game", "Player " + str(self.list_pion_player1[0].player_number.value) + " WIN\nTotal waktu player 1 : "+ ("%.2f" % self.total_time_player1) + " seconds\nTotal waktu player 2 : "+("%.2f" % self.total_time_player2)  + " seconds")
             return
         
         # tukarkan kedua player
@@ -276,9 +286,11 @@ class GameState():
         if (self.list_pion_player1[0].player_type.value == 1):
             # Player adalah human
             # mengaktifkan tombol player saat ini
+            
             for pion in self.list_pion_player1 :
                 pion.set_hover(self.board,True)
                 self.board.canvas.tag_bind(pion.canvas, "<1>", lambda event, pion=pion: self.pion_on_click(pion))
+            self.before_time = time.time()
             self.board.update()
         
         elif (self.list_pion_player1[0].player_type.value == 2):
@@ -286,9 +298,14 @@ class GameState():
             # minimax
             myThread = threading.Thread(target =self.minimax_ab, args =(self.depth,True,
                 self.maks_depth_minimax,-math.inf,math.inf, self.list_pion_player1[0].player_number))
+            self.before_time = time.time()
             myThread.start()
             myThread.join()
             self.board.stop_thread()
+            if(self.list_pion_player1[0].player_number.value==1):
+                self.total_time_player1 += time.time() - self.before_time
+            else :
+                self.total_time_player2 += time.time() - self.before_time
             pion = self.act [0]
             x = self.act [1][0]
             y = self.act [1][1]
@@ -300,9 +317,14 @@ class GameState():
             self.board.create_thread()
             # local search + minimax
             myThread = threading.Thread(target =self.local_search_minimax, args =(self.depth,True,self.maks_depth_minimax_local,self.list_pion_player1[0].player_number))
+            self.before_time = time.time()
             myThread.start()
             myThread.join()
             self.board.stop_thread()
+            if(self.list_pion_player1[0].player_number.value==1):
+                self.total_time_player1 += time.time() - self.before_time
+            else :
+                self.total_time_player2 += time.time() - self.before_time
             pion = self.act [0]
             x = self.act [1][0]
             y = self.act [1][1]
@@ -317,7 +339,7 @@ class GameState():
     def minimax_ab(self,depth, maks, maks_depth, alpha,beta, player_number):
         # minimax
         # base
-        if self.isTerminalState()!=0 or depth==maks_depth or self.board.timeout <=0 : return self.utilityFunction(player_number)
+        if self.isTerminalState()!=0 or depth==maks_depth or self.board.timeout <=1 : return self.utilityFunction(player_number)
 
         # rek
         if (maks):
@@ -380,7 +402,7 @@ class GameState():
             return point_distance2((x,y),target) - point_distance2(valid_move[1],target)
         
         # base
-        if self.isTerminalState()!=0 or depth==maks_depth or  self.board.timeout <=0 : return self.utilityFunction(player_number)
+        if self.isTerminalState()!=0 or depth==maks_depth or  self.board.timeout <=1 : return self.utilityFunction(player_number)
 
         # rekursif
         if (maks):
