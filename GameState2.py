@@ -256,6 +256,10 @@ class GameState():
         # minimax
         # untested
         if self.isTerminalState()!=0 or depth==maks_depth :
+            # f = open("text.txt", "a")
+            # f.write(str(self.utilityFunction(player_number)))
+            # f.close()
+            # print("player_number", player_number)
             return self.utilityFunction(player_number)
 
         # if (depth==2 and player_number==PlayerNumber.Player_2):
@@ -287,8 +291,45 @@ class GameState():
 
             x = validmove[1][0]
             y = validmove[1][1]
-            pion = Pion(validmove[0].id, validmove[0].player_number,validmove[0].player_type,x,y)
-            pion.set_area(self.board.tiles[x][y])
+
+            if (player_number==PlayerNumber.Player_1):
+                # if (depth==1):
+                #     print("pion.position", self.list_pion_player1[validmove[0].id].position)
+
+                self.list_pion_player1[validmove[0].id].position = (x,y)
+                self.list_pion_player1[validmove[0].id].set_area(self.board.tiles[x][y])
+
+                # if (depth==1):
+                #     print("pion.position2", self.list_pion_player1[validmove[0].id].position)
+
+                val = self.minimax(depth+1,not(maks),maks_depth, PlayerNumber.Player_2)
+
+                self.list_pion_player1[validmove[0].id].position = temp_position
+                self.list_pion_player1[validmove[0].id].area = temp_area    
+
+                # if (depth==1):
+                #     print("pion.position3", self.list_pion_player1[validmove[0].id].position)            
+
+            else:
+                # if (depth==0):
+                #     print("pion.position", self.list_pion_player2[validmove[0].id-10].position)
+
+                self.list_pion_player2[validmove[0].id-10].position = (x,y)
+                self.list_pion_player2[validmove[0].id-10].set_area(self.board.tiles[x][y])
+
+                # if (depth==0):
+                #     print("pion.position2", self.list_pion_player2[validmove[0].id-10].position)
+
+                val = self.minimax(depth+1,not(maks),maks_depth, PlayerNumber.Player_1)
+
+                self.list_pion_player2[validmove[0].id-10].position = temp_position
+                self.list_pion_player2[validmove[0].id-10].area = temp_area  
+
+                # if (depth==0):
+                #     print("pion.position3", self.list_pion_player2[validmove[0].id-10].position)
+
+            # pion = Pion(validmove[0].id, validmove[0].player_number,validmove[0].player_type,x,y)
+            # pion.set_area(self.board.tiles[x][y])
 
             # temp.append(pion)
             # gameState = GameState(self.board,self.list_pion_player2,temp,depth+1,True)
@@ -296,16 +337,16 @@ class GameState():
             # if (depth==0):
             #     print("pion.position", pion.position)
 
-            # val = gameState.minimax(depth+1,not(maks),maks_depth,player_number)
-            val = self.minimax(depth+1,not(maks),maks_depth, PlayerNumber.Player_1 
-                if player_number==PlayerNumber.Player_2 else PlayerNumber.Player_2)
+            # # val = gameState.minimax(depth+1,not(maks),maks_depth,player_number)
+            # val = self.minimax(depth+1,not(maks),maks_depth, PlayerNumber.Player_1 
+            #     if player_number==PlayerNumber.Player_2 else PlayerNumber.Player_2)
 
-            if (depth==1):
-                print("val", val)
+            # if (depth==0):
+            #     print("val", val)
 
             # mengembalikan posisi dan area pion menjadi semula
-            pion.position = temp_position
-            pion.area = temp_area
+            # pion.position = temp_position
+            # pion.area = temp_area
 
             if (maks):
                 v = max(v, val)
@@ -316,9 +357,10 @@ class GameState():
                 action = validmove
 
         if (depth==0):
+            print("halo")
             self.action = action
             self.finish_execute = True
-            return action
+            # return action
         else:
             return v
 
@@ -444,21 +486,22 @@ class GameState():
 
     def execute_computer_move(self):
         self.computing = True
+        self.board.update()
 
         self.time_out = False
         self.finish_execute = False
         self.time_counter = self.t_limit
         self.board.draw_timer(self.time_counter)
 
-        # t1 = Thread(target=self.time_counting, args=())
+        # self.t1 = Thread(target=self.time_counting, args=())
         # t1.start()
         if (self.current_player=='minimax'):
             if (self.current_player==self.p1):
-                # t2 = Thread(target=self.minimax, args=(self.depth,True,3,self.list_pion_player1[0].player_number))
+                # self.t2 = Thread(target=self.minimax, args=(self.depth,True,3,self.list_pion_player1[0].player_number))
                 t2 = self.minimax(self.depth,True,3,self.list_pion_player1[0].player_number)
             else:
                 print("list_pion_player2[0].player_number", self.list_pion_player2[0].player_number)
-                # t2 = Thread(target=self.minimax, args=(self.depth,True,3,self.list_pion_player2[0].player_number))
+                # self.t2 = Thread(target=self.minimax, args=(self.depth,True,3,self.list_pion_player2[0].player_number))
                 t2 = self.minimax(self.depth,True,3,self.list_pion_player2[0].player_number)
 
         # jika current_player adalah 'agent minimax local search'
@@ -468,15 +511,15 @@ class GameState():
             else:
                 act = self.minimax(self.depth,True,3,self.list_pion_player2[0].player_number) #TODO
 
-        # t1.start()
-        # t2.start()
+        # self.t1.start()
+        # self.t2.start()
 
         # while not(self.time_out and self.finish_execute):
         #     time.sleep(0.1)
         #     self.board.draw_timer(self.time_counter)
 
-        # t1.join()
-        # t2.join()
+        # self.t1.join()
+        # self.t2.join()
 
         # jika selesai mengeksekusi
         if (self.finish_execute):
@@ -487,6 +530,13 @@ class GameState():
             pion.set_area(self.board.tiles[x][y])
 
             self.board.update()
-            self.current_player = (self.p2 if pion.player_number.value==1 else self.p1)
+
+        self.current_player = (self.p2 if pion.player_number.value==1 else self.p1)
+
+        if (self.current_player=="minimax" or self.current_player=="minilocal"):
+            self.execute_computer_move()
+        # else:
+        #     self.t1 = Thread(target=self.time_counting, args=())
+        #     self.t1.start()
 
         self.computing = False
