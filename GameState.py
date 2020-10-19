@@ -9,7 +9,7 @@ class GameState():
     # Representasikan gamestate
     #---- dapat berupa game yang sedang berjalan
     #---- maupun virtualisasi dalam pengerjaan minimax
-    def __init__(self, board, list_pion_player1=None, list_pion_player2=None, depth= 0,virtual=False):
+    def __init__(self, board, list_pion_player1=None, list_pion_player2=None, depth=0, virtual=False):
         self.board = board
         # deklarasi list pion player 1 dan 2
         #  saat next turn, satu sama lain akan ditukar
@@ -28,8 +28,7 @@ class GameState():
                 if(pion.player_number == PlayerNumber(2)):
                     self.list_pion_player2.append(pion)
         self.depth = depth
-
-
+        self.calculate_max_depth()
 
         # Setting pion dari player yang mendapat giliran untuk dapat ditekan untuk memilih aksi
         if not virtual:
@@ -45,7 +44,7 @@ class GameState():
                 self.board.create_thread(False)
                 # minimaxe
                 # b = time.time()
-                myThread = threading.Thread(target =self.minimax, args =(self.depth,True,2,self.list_pion_player1[0].player_number))
+                myThread = threading.Thread(target =self.minimax, args =(self.depth,True,self.maks_depth_minimax,self.list_pion_player1[0].player_number))
                 # print(time.time()-b)
                 myThread.start()
                 myThread.join()
@@ -61,7 +60,8 @@ class GameState():
             else:
                 self.board.create_thread(False)
                 # local search + minimax
-                myThread = threading.Thread(target =self.local_search_minimax, args =(self.depth,True,3,self.list_pion_player1[0].player_number))
+                myThread = threading.Thread(target =self.local_search_minimax, args =(self.depth,True,
+                    self.maks_depth_minimax_local,self.list_pion_player1[0].player_number))
                 myThread.start()
                 myThread.join()
                 self.board.stop_thread()
@@ -74,6 +74,23 @@ class GameState():
 
             # start tkInter
             self.board.mainloop()
+
+    def calculate_max_depth(self):
+        # mengubah maksimal waktu menjadi node limit untuk minimax
+        # ASUMSI: satu detik bisa membangkitkan 1000 simpul
+        n_limit_minimax = self.board.maks_time * 1000
+
+        # dapat maks_depth untuk minimax
+        # ASUMSI: satu simpul dapat membangkitkan maksimal 49 simpul
+        self.maks_depth_minimax = math.floor(math.log(n_limit_minimax, 49))
+
+        # mengubah maksimal waktu menjadi node limit untuk minimax
+        # ASUMSI: satu detik bisa membangkitkan 800 simpul
+        n_limit_minimax_local = self.board.maks_time * 800
+
+        # dapat maks_depth untuk minimax + local search
+        # Satu simpul dapat membangkitkan maksimal 3 simpul
+        self.maks_depth_minimax_local = math.floor(math.log(n_limit_minimax_local, 3))
 
 
     def isTerminalState(self):
@@ -278,7 +295,8 @@ class GameState():
             self.board.create_thread(False)
             # minimaxe
             # b = time.time()
-            myThread = threading.Thread(target =self.minimax, args =(self.depth,True,2,self.list_pion_player1[0].player_number))
+            myThread = threading.Thread(target =self.minimax, args =(self.depth,True,
+                self.maks_depth_minimax,self.list_pion_player1[0].player_number))
             # print(time.time()-b)
             myThread.start()
             myThread.join()
@@ -294,7 +312,8 @@ class GameState():
         else:
             self.board.create_thread(False)
             # local search + minimax
-            myThread = threading.Thread(target =self.local_search_minimax, args =(self.depth,True,3,self.list_pion_player1[0].player_number))
+            myThread = threading.Thread(target =self.local_search_minimax, args =(self.depth,True,
+                self.maks_depth_minimax_local,self.list_pion_player1[0].player_number))
             myThread.start()
             myThread.join()
             self.board.stop_thread()

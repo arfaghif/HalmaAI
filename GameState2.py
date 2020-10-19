@@ -483,6 +483,7 @@ class GameState():
 
             elif(self.finish_execute):
                 break
+        print("bandung")
 
     def execute_computer_move(self):
         self.computing = True
