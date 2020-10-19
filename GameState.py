@@ -40,13 +40,7 @@ class GameState():
                     pion.set_hover(self.board,True)
                     self.board.canvas.tag_bind(pion.canvas, "<1>", lambda event, pion=pion: self.pion_on_click(pion))
                 self.board.update()
-                # pion_number = self.list_pion_player1[0].player_number
-                # t = self.board.maks_time
-                # while t>0 and pion_number == self.list_pion_player1[0].player_number:
-                #     time.sleep(1)
-                #     t-=1
-                #     if(t==0):
-                #         self.next_turn
+
             elif (self.list_pion_player1[0].player_type.value == 2):
                 self.board.create_thread(False)
                 # minimaxe
@@ -55,6 +49,7 @@ class GameState():
                 # print(time.time()-b)
                 myThread.start()
                 myThread.join()
+                self.board.stop_thread()
                 pion = self.act [0]
                 x = self.act [1][0]
                 y = self.act [1][1]
@@ -69,6 +64,7 @@ class GameState():
                 myThread = threading.Thread(target =self.local_search_minimax, args =(self.depth,True,3,self.list_pion_player1[0].player_number))
                 myThread.start()
                 myThread.join()
+                self.board.stop_thread()
                 pion = self.act [0]
                 x = self.act [1][0]
                 y = self.act [1][1]
@@ -255,7 +251,7 @@ class GameState():
         
 
     def next_turn(self):
-        self.board.stop_thread()
+        
         # nonaktifkan terlebih dahulu tombol pion player sebelumnya
         # print(self.list_pion_player1[0].position)
         # print(self.list_pion_player2[0].position)
@@ -270,7 +266,6 @@ class GameState():
         # print(self.list_pion_player1[0].position)
         # print(self.list_pion_player2[0].position)
         if (self.list_pion_player1[0].player_type.value == 1):
-            self.board.create_thread(True)
             # Player adalah human
             # mengaktifkan tombol player saat ini
             for pion in self.list_pion_player1 :
@@ -287,6 +282,7 @@ class GameState():
             # print(time.time()-b)
             myThread.start()
             myThread.join()
+            self.board.stop_thread()
             pion = self.act [0]
             x = self.act [1][0]
             y = self.act [1][1]
@@ -301,6 +297,7 @@ class GameState():
             myThread = threading.Thread(target =self.local_search_minimax, args =(self.depth,True,3,self.list_pion_player1[0].player_number))
             myThread.start()
             myThread.join()
+            self.board.stop_thread()
             pion = self.act [0]
             x = self.act [1][0]
             y = self.act [1][1]

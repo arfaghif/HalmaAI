@@ -1,5 +1,5 @@
-from GameState2 import GameState
+from GameState import GameState
 from Board import Board
 
-board = Board(10,10)
+board = Board(16,10)
 newGame = GameState(board)

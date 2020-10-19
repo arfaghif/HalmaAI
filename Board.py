@@ -45,9 +45,9 @@ class Board(tk.Tk):
         """
         self.maks_time = t
         # Merepresentasekan timer
-        self.timer = tk.Label(self, anchor="c", font=('digital-7', 16),
-            bg="#212121", fg="#fff", text="0")
-        self.timer.grid(row=0, column=self.size+2, sticky="ewns")
+        # self.timer = tk.Label(self, anchor="c", font=('digital-7', 16),
+        #     bg="#212121", fg="#fff", text="0")
+        # self.timer.grid(row=0, column=self.size+2, sticky="ewns")
 
         # Representasikan papan yang terdiri dari kumpulan tile
         self.tiles = [[None]*size for i in range(size)]
@@ -92,17 +92,17 @@ class Board(tk.Tk):
             for j in range (self.size) :
                 self.tiles[i][j].reset(self)
 
-    def draw_timer(self, waktu):
-        # Mengganti waktu timer
-        self.timer.configure(text=waktu)
-        self.update()
+    # def draw_timer(self, waktu):
+    #     # Mengganti waktu timer
+    #     self.timer.configure(text=waktu)
+    #     self.update()
 
     def countdown(self,waktu,player):
         
         self.timeout = waktu
         while self.timeout > 0:
-            if (player):
-                self.draw_timer(str(self.timeout))
+            # if (player):
+            #     self.draw_timer(str(self.timeout))
             time.sleep(1)
             self.timeout -= 1
 
@@ -112,6 +112,6 @@ class Board(tk.Tk):
 
     def stop_thread(self):
         self.timeout = 0
-        self.draw_timer("0")
-        self.update()
+        # self.draw_timer("0")
+        # self.update()
         self.thread_timer.join()
