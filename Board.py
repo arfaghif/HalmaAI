@@ -7,7 +7,7 @@ import time
 class Board(tk.Tk):
     # Merepresentasikan board sebagai papan permainan. Papan permainan berupa GUI TkInter (inherrit)
     
-    def __init__(self, size,t):
+    def __init__(self, size, t, p1, p2):
         tk.Tk.__init__(self)
         self.title("Halma MiniMax")
         self.size = size
@@ -55,13 +55,13 @@ class Board(tk.Tk):
                 if (row + col < 4):
                     tile = Tile(row,col, TypeTile(1))
                     self.player1_tiles.append(tile)
-                    pion = Pion(id,PlayerNumber(1),PlayerType(2),row,col)
+                    pion = Pion(id,PlayerNumber(1),PlayerType(p1),row,col)
                     self.pions.append(pion)
                     id +=1
                 elif row + col > 2 * (size - 3):
                     tile = Tile(row,col, TypeTile(2))
                     self.player2_tiles.append(tile)
-                    pion = Pion(id,PlayerNumber(2),PlayerType(3),row,col)
+                    pion = Pion(id,PlayerNumber(2),PlayerType(p2),row,col)
                     self.pions.append(pion)
                     id +=1
                 else:
