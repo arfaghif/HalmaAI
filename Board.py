@@ -83,16 +83,16 @@ class Board(tk.Tk):
             for j in range (self.size) :
                 self.tiles[i][j].reset(self)
 
-    def countdown(self,waktu,player):
+    def countdown(self,waktu):
         # untuk hitung mundur AI
         self.timeout = waktu
         while self.timeout > 0:
             time.sleep(1)
             self.timeout -= 1
 
-    def create_thread(self,player):
+    def create_thread(self):
         # membuat thread hitung mundur
-        self.thread_timer = threading.Thread(target=self.countdown,args=(self.maks_time,player))
+        self.thread_timer = threading.Thread(target=self.countdown,args=(self.maks_time,))
         self.thread_timer.start()
 
     def stop_thread(self):

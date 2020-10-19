@@ -36,7 +36,6 @@ class GameState():
             self.calculate_max_depth()
             if (self.list_pion_player1[0].player_type.value==1):
                 # human
-                self.board.create_thread(True)
                 for pion in self.list_pion_player1 :
                     pion.set_hover(self.board,True)
                     self.board.canvas.tag_bind(pion.canvas, "<1>", lambda event, pion=pion: self.pion_on_click(pion))
@@ -44,7 +43,7 @@ class GameState():
 
             elif (self.list_pion_player1[0].player_type.value == 2):
                 # AI minimax
-                self.board.create_thread(False)
+                self.board.create_thread()
                 myThread = threading.Thread(target =self.minimax_ab, args =(self.depth,True,self.maks_depth_minimax,-math.inf, math.inf, self.list_pion_player1[0].player_number))
                 myThread.start()
                 myThread.join()
@@ -58,7 +57,7 @@ class GameState():
 
             else:
                 # AI local search + minimax
-                self.board.create_thread(False)
+                self.board.create_thread()
                 myThread = threading.Thread(target =self.local_search_minimax, args =(self.depth,True,self.maks_depth_minimax_local,self.list_pion_player1[0].player_number))
                 myThread.start()
                 myThread.join()
@@ -283,7 +282,7 @@ class GameState():
             self.board.update()
         
         elif (self.list_pion_player1[0].player_type.value == 2):
-            self.board.create_thread(False)
+            self.board.create_thread()
             # minimax
             myThread = threading.Thread(target =self.minimax_ab, args =(self.depth,True,
                 self.maks_depth_minimax,-math.inf,math.inf, self.list_pion_player1[0].player_number))
@@ -298,7 +297,7 @@ class GameState():
             self.next_turn()
 
         else:
-            self.board.create_thread(False)
+            self.board.create_thread()
             # local search + minimax
             myThread = threading.Thread(target =self.local_search_minimax, args =(self.depth,True,self.maks_depth_minimax_local,self.list_pion_player1[0].player_number))
             myThread.start()
