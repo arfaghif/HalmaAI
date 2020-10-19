@@ -80,13 +80,13 @@ class GameState():
 
         if (self.board.maks_time < 3):
             self.maks_depth_minimax = 1
-            self.maks_depth_minimax_local = 2
+            self.maks_depth_minimax_local = 3
         elif(self.board.maks_time < 12):
             self.maks_depth_minimax = 2
-            self.maks_depth_minimax_local = 3
+            self.maks_depth_minimax_local = 5
         else:
             self.maks_depth_minimax = 3
-            self.maks_depth_minimax_local = 4
+            self.maks_depth_minimax_local = 7
 
 
     def isTerminalState(self):
