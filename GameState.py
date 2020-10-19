@@ -5,6 +5,7 @@ import math
 import threading
 import time
 from operator import itemgetter
+import random
 
 class GameState():
     # Representasikan gamestate
@@ -44,7 +45,7 @@ class GameState():
             elif (self.list_pion_player1[0].player_type.value == 2):
                 # AI minimax
                 self.board.create_thread(False)
-                myThread = threading.Thread(target =self.minimax, args =(self.depth,True,self.maks_depth_minimax,self.list_pion_player1[0].player_number))
+                myThread = threading.Thread(target =self.minimax_ab, args =(self.depth,True,self.maks_depth_minimax,-math.inf, math.inf, self.list_pion_player1[0].player_number))
                 myThread.start()
                 myThread.join()
                 self.board.stop_thread()
@@ -284,8 +285,8 @@ class GameState():
         elif (self.list_pion_player1[0].player_type.value == 2):
             self.board.create_thread(False)
             # minimax
-            myThread = threading.Thread(target =self.minimax, args =(self.depth,True,
-                self.maks_depth_minimax,self.list_pion_player1[0].player_number))
+            myThread = threading.Thread(target =self.minimax_ab, args =(self.depth,True,
+                self.maks_depth_minimax,-math.inf,math.inf, self.list_pion_player1[0].player_number))
             myThread.start()
             myThread.join()
             self.board.stop_thread()
@@ -314,7 +315,7 @@ class GameState():
 
         
 
-    def minimax(self,depth, maks, maks_depth, player_number):
+    def minimax_ab(self,depth, maks, maks_depth, alpha,beta, player_number):
         # minimax
         # base
         if self.isTerminalState()!=0 or depth==maks_depth or self.board.timeout <=0 : return self.utilityFunction(player_number)
@@ -338,12 +339,20 @@ class GameState():
             temp.append(pion)
             gameState = GameState(self.board,self.list_pion_player2,temp,depth+1,True)
 
-            val = gameState.minimax(depth+1,not(maks),maks_depth,player_number)
+            val = gameState.minimax_ab(depth+1,not(maks),maks_depth,alpha, beta, player_number)
 
             if (maks):
                 v = max(v, val)
+                alpha = max(alpha,v)
+                if (beta <= alpha):
+                    break
+
             else: # not maks
                 v = min(v, val)
+                beta= min(beta,v)
+                if(beta<= alpha):
+                    break
+
 
             if depth==0 and val == v :
                 self.act = validmove
@@ -387,7 +396,8 @@ class GameState():
         valid_moves_value = [heuristic_function(valid_move) for valid_move in valid_moves]
         zipped_pairs = zip(valid_moves,valid_moves_value)
         valid_moves = [x for x,_ in sorted(zipped_pairs,  key = itemgetter(1), reverse=True)]
-
+        valid_moves = valid_moves[:5]
+        random.shuffle(valid_moves)
         for validmove in valid_moves[:2]:
             temp = [e for e in self.list_pion_player1 if e!=validmove[0]]
                 
@@ -398,7 +408,7 @@ class GameState():
             temp.append(pion)
             gameState = GameState(self.board,self.list_pion_player2,temp,depth+1,True)
 
-            val = gameState.minimax(depth+1,not(maks),maks_depth,player_number)
+            val = gameState.local_search_minimax(depth+1,not(maks),maks_depth,player_number)
 
             if (maks):
                 v = max(v, val)
