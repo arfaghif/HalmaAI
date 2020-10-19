@@ -1,4 +1,4 @@
-from GameState import GameState
+from GameState2 import GameState
 from Board import Board
 
 board = Board(10,10)
