@@ -20,7 +20,7 @@ sebagai pembuatan GUInya.<br> <br/>
 2. Lalu *extract* file ZIP tersebut. Pada tempat folder tersebut, bukalah terminal di sana. Dengan menekan dua kali *location bar* yang ada pada di sana, lalu ketik **cmd**.
 3. Setelah itu, masukan dengan format penulisan seperti di bawah ini.
     ```
-    Python main.py <board size><t_limit><type player 1><type player 2>
+    Python main.py <board size> <t_limit> <type player 1> <type player 2>
     ```
     
     **board size** dapat diisi dengan : 8, 10, 16 <br/>
